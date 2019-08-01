@@ -85,6 +85,8 @@ class Layer(object):
             previous_layer(Layer): The layer before the current one
             weightlist(List): List of weights in order
         """
-        for i, neuron in enumerate(previous_layer.neurons):
-            value = weightlist[i] * neuron.value
-            self.neurons[i].value = Layer.sigma(value)
+        for i in range(len(self.neurons)):
+            value = 0
+            for j, neuron in enumerate(previous_layer.neurons):
+                value += weightlist[j] * neuron.value
+            self.neurons[i].value = value

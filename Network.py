@@ -1,6 +1,7 @@
 """
 Defines network
 """
+import numpy as np
 
 class Network(object):
     """
@@ -12,7 +13,7 @@ class Network(object):
 
     def __init__(self, layers, weightlists):
         self.layers = layers
-        self.weightlist = weightlists
+        self.weightlists = weightlists
 
     @property
     def weightlists(self):
@@ -65,3 +66,22 @@ class Network(object):
             layers(List): List of layer objects
         """
         self._layers = layers
+
+
+    def get_cost(self, output, training_value):
+        """
+        Finds the cost of the network
+
+        Args:
+            output(List): A list of correct values from training data
+        Returns:
+            cost(float): The average cost of network
+        """
+        cost = (output - training_value)
+
+        return round(cost, 2)
+
+
+    def gradient_descent(self, costs, learning_rate=1):
+        for i in range(len(self.weightlists)):
+            self.weightlists[i] -= learning_rate * np.gradient(self.weightlists[i])
