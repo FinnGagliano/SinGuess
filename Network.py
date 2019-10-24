@@ -97,4 +97,6 @@ class Network(object):
         return costs
 
     def gradient_descent(self, output_cost, learning_rate=1):
-        print('foo')
+        for weightlist in self.weightlists:
+            for i in range(len(weightlist)):
+                weightlist[i] -= learning_rate * output_cost[i]

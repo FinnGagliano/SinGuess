@@ -30,8 +30,8 @@ for i, weightlist in enumerate(weightlists):
 network = Network(layers, weightlists)
 
 # Trains the network
-iterations = 300
-data_size = 100
+iterations = 3000
+data_size = 1000
 layer_costs = []
 for i in range(iterations):
     x = np.random.rand(data_size, 1) * 10 - 1
@@ -44,7 +44,11 @@ for i in range(iterations):
     output_cost = network.get_output_cost_deriv(output_values, y)
     network.gradient_descent(output_cost)
 
+
+pyplot.scatter(x, y)
+
 x = np.linspace(0, 10, 100)
 y = network.output(x)
-pyplot.plot(x, y)
+
+pyplot.scatter(x, y)
 pyplot.show()
