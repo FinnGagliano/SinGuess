@@ -2,6 +2,7 @@
 Defines network
 """
 import numpy as np
+from Layer import Layer
 
 class Network(object):
     """
@@ -67,21 +68,33 @@ class Network(object):
         """
         self._layers = layers
 
+    def output(self, input):
+        for i in range(len(self.layers) - 1):
+            self.layers[i+1].backfeed(self.layers[i], self.weightlists[i][0])
 
-    def get_cost(self, output, training_value):
+        return self.layers[-1].neurons[0].value
+
+
+    def get_output_cost_deriv(self, outputs, training_values):
         """
         Finds the cost of the network
 
         Args:
-            output(List): A list of correct values from training data
+            output(List): A list of output neurons
+            training_values(List): A list of actual values
         Returns:
-            cost(float): The average cost of network
+            cost(List): List of costs
+        Raises:
+            ValueError: If output length doesn't match training data
         """
-        cost = (output - training_value)
+        if len(outputs) != len(training_values):
+            raise ValueError("Network output length should match training data")
 
-        return round(cost, 2)
+        costs = [outputs[i] - training_values[i] for i in range(len(outputs))]
+        for i in range(len(costs)):
+             costs[i] *= Layer.deriv_activation(outputs)[i]
 
+        return costs
 
-    def gradient_descent(self, costs, learning_rate=1):
-        for i in range(len(self.weightlists)):
-            self.weightlists[i] -= learning_rate * np.gradient(self.weightlists[i])
+    def gradient_descent(self, output_cost, learning_rate=1):
+        print('foo')
