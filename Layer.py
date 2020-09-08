@@ -11,7 +11,7 @@ class Layer(object):
     _size = 0
     _neurons = []
 
-    def __init__(self, size, neurons):
+    def __init__(self, neurons):
         """
         Initialize the layer
 
@@ -19,10 +19,7 @@ class Layer(object):
             size(int): number of neurons in layer
             neurons(List): list of neurons in layer
         """
-        if size != len(neurons):
-            raise ValueError("Number of neurons in layer must match layer size")
-
-        self.size = size
+        self.size = len(neurons)
         self.neurons = neurons
 
 
@@ -63,7 +60,7 @@ class Layer(object):
 
 
     @staticmethod
-    def sigma(x_in):
+    def activation(x_in):
         """
         Returns the sigmoid function of the input
 
@@ -71,10 +68,14 @@ class Layer(object):
             x_in(float): The input value of the sigmoid function
 
         Returns:
-            float: The sigmoid function of input
+            float: The activation function of input
 
         """
-        return 1 / (1 + np.exp(-x_in))
+        return np.tanh(x_in)
+
+    @staticmethod
+    def deriv_activation(w):
+        return 1 - (np.tanh(w) ** 2)
 
 
     def backfeed(self, previous_layer, weightlist):
@@ -83,10 +84,7 @@ class Layer(object):
 
         Args:
             previous_layer(Layer): The layer before the current one
-            weightlist(List): List of weights in order
+            weightlist(List): List of lists of weights in order of neuron
         """
         for i in range(len(self.neurons)):
-            value = 0
-            for j, neuron in enumerate(previous_layer.neurons):
-                value += weightlist[j] * neuron.value
-            self.neurons[i].value = value
+            self.neurons[i].value = [Layer.activation(weightlist[i] * val) for val in [neuron.value for neuron in previous_layer.neurons][0]]

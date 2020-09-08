@@ -4,40 +4,41 @@ from Network import Network
 import numpy as np
 from matplotlib import pyplot
 
-iterations = 40000
 
 # Defines input neuron
-input_neuron = [Neuron(180)]
-input_layer = Layer(1, input_neuron)
+input_layer = Layer([Neuron()])
 
 # Defines hidden layer
 hidden_neurons = []
-for i in range(128):
+neuron_number = 100
+for i in range(neuron_number):
     hidden_neurons.append(Neuron(round(np.random.ranf(), 2)))
-hidden_layer = Layer(128, hidden_neurons)
+hidden_layer = Layer(hidden_neurons)
 
-# Defines output neuron
-output_neuron = [Neuron(round(np.random.ranf(), 2))]
-output_layer = Layer(1, output_neuron)
+# Defines empty output layer
+output_layer = Layer([Neuron()])
 
 # Randomly sets up weights
 layers = [input_layer, hidden_layer, output_layer]
-weightlists = [[], []]
-for weightlist in weightlists:
-    for i in range(128):
-        weightlist.append(round(np.random.ranf(), 2))
+weightlists = [[] for i in range(len(layers) - 1)]
+for i, weightlist in enumerate(weightlists):
+    for j in range(len(layers[i].neurons)):
+        weightlist.append([round(np.random.ranf(), 2) for k
+            in range(len(layers[i + 1].neurons))])
 
 # Initializes network
 network = Network(layers, weightlists)
 
 # Trains the network
-costs = []
+iterations = 3000
+data_size = 1000
+layer_costs = []
 for i in range(iterations):
-    x = round(10 * np.random.ranf(), 2)
-    y = round(np.sin(x), 2)
-    network.layers[0].neurons[0].value = x
+    x = np.random.rand(data_size, 1) * 10 - 1
+    network.layers[0].neurons = [Neuron([val[0] for val in x])]
+    y = [np.sin(x_val) for x_val in x]
     for j in range(len(network.layers) - 1):
-        network.layers[j + 1].backfeed(network.layers[j], network.weightlists[j])
+        network.layers[j+1].backfeed(network.layers[j], network.weightlists[j][0])
 
     output_value = network.layers[-1].neurons[0].value
     costs.append(round(output_value - y), 2)
