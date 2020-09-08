@@ -40,6 +40,6 @@ for i in range(iterations):
         network.layers[j + 1].backfeed(network.layers[j], network.weightlists[j])
 
     output_value = network.layers[-1].neurons[0].value
-    costs.append(network.get_cost(output_value, y))
+    costs.append(round(output_value - y), 2)
     network.gradient_descent(costs, 0.1)
     print("Iteration: {}, Cost: {}, Output: {}, Expected Output: {}".format(str(i), str(costs[i]), str(output_value), str(y)))
