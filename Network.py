@@ -93,7 +93,6 @@ class Network(object):
         costs = [outputs[i] - training_values[i] for i in range(len(outputs))]
         for i in range(len(costs)):
              costs[i] *= Layer.deriv_activation(outputs)[i]
-
         return costs
 
     def gradient_descent(self, output_cost, learning_rate=1):
