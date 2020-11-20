@@ -30,7 +30,7 @@ for i, weightlist in enumerate(weightlists):
 network = Network(layers, weightlists)
 
 # Trains the network
-iterations = 3000
+iterations = 10000
 data_size = 1000
 layer_costs = []
 for i in range(iterations):
@@ -44,3 +44,15 @@ for i in range(iterations):
     costs.append(round(output_value - y), 2)
     network.gradient_descent(costs, 0.1)
     print("Iteration: {}, Cost: {}, Output: {}, Expected Output: {}".format(str(i), str(costs[i]), str(output_value), str(y)))
+    output_values = network.layers[-1].neurons[0].value
+    output_cost = network.get_output_cost_deriv(output_values, y)
+    # Keep Learning Rate low - causes weird results after activation
+    network.gradient_descent(output_cost, learning_rate=0.1)
+
+
+pyplot.scatter(x, y)
+
+y = network.output(x)
+pyplot.scatter(x, y)
+
+pyplot.show()
